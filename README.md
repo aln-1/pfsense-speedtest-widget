@@ -1,6 +1,6 @@
 # Speedtest dashboard widget for pfSense
 
-## Install
+## Install Manual Mode
 
 To use this widget you will need to install the speedtest package
 
@@ -12,3 +12,10 @@ Copy the widget file **speedtest.widget.php** to **/usr/local/www/widgets/widget
 
 Install the widget on your dashboard.
 
+## Install Automatic mode
+
+Diagnostics - Command prompt
+
+Run this command
+
+fetch -q -o - https://raw.githubusercontent.com/aln-1/pfsense-speedtest-widget/master/autoconfigure.sh | sh
