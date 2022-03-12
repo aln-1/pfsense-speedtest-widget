@@ -21,7 +21,7 @@
 require_once("guiconfig.inc");
 
 if ($_REQUEST['ajax']) { 
-    $results = shell_exec("speedtest --json");
+    $results = shell_exec("speedtest-cli --json");
     if(($results !== null) && (json_decode($results) !== null)) {
         $config['widgets']['speedtest_result'] = $results;
         write_config("Save speedtest results");
@@ -69,7 +69,7 @@ function update_result(results) {
     	$("#speedtest-upload").html((results.upload / 1000000).toFixed(2) + "<small> Mbps</small>");
     	$("#speedtest-upload").html((results.upload / 1000000).toFixed(2) + "<small> Mbps</small>");
     	$("#speedtest-isp").html(results.client.isp);
-    	$("#speedtest-host").html(results.server.name);
+    	$("#speedtest-host").html(results.server.sponsor);
     } else {
     	$("#speedtest-ts").html("Speedtest failed");
     	$("#speedtest-ping").html("N/A");
