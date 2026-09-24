@@ -20,9 +20,27 @@
 
 require_once("guiconfig.inc");
 
-if ($_REQUEST['ajax']) { 
-    $results = shell_exec("speedtest --json");
-    if(($results !== null) && (json_decode($results) !== null)) {
+// Convert speedtest-go JSON output to the format used by the widget
+function speedtest_convert_results($output) {
+    $data = json_decode($output, true);
+    if (!is_array($data) || empty($data['servers'][0])) {
+        return null;
+    }
+    $server = $data['servers'][0];
+    return json_encode(array(
+        'timestamp' => date('c', strtotime($data['timestamp'])),
+        'ping' => $server['latency'] / 1000000,     // ns -> ms
+        'download' => $server['dl_speed'] * 8,      // bytes/s -> bits/s
+        'upload' => $server['ul_speed'] * 8,        // bytes/s -> bits/s
+        'client' => array('isp' => $data['user_info']['Isp']),
+        'server' => array('name' => $server['name'])
+    ));
+}
+
+if ($_REQUEST['ajax']) {
+    $output = shell_exec("speedtest-go --json");
+    $results = ($output === null) ? null : speedtest_convert_results($output);
+    if ($results !== null) {
         $config['widgets']['speedtest_result'] = $results;
         write_config("Save speedtest results");
         echo $results;
